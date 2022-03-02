@@ -58,17 +58,40 @@ document.getElementById("addToCart").addEventListener("click", (event) => {
   // récupération des donnée du produit sélectionné //
   let SelectedProduct = {
     id: idProduct,
-    quantity: document.getElementById("quantity").value,
+    name: document.getElementById("title").innerHTML,
     color: document.getElementById("colors").value,
+    description: document.getElementById("description").innerText,
+    quantity: document.getElementById("quantity").value,
+    price: document.getElementById("price").innerHTML,
+    imageUrl: document.querySelector(".item__img img").src,
+    imageTxt: document.querySelector(".item__img img").alt,
   };
 
   //////////////////// Save to local storage ////////////////////////
 
   let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
-  console.log(productSavedInLocalStorage);
   if (productSavedInLocalStorage) {
     // quand il y a deja des produits dans le panier
-    productSavedInLocalStorage.push(SelectedProduct);
+
+    let indexMatch = productSavedInLocalStorage.findIndex(
+      // si un des produit est identique dans le panier
+      (product) =>
+        product.id === SelectedProduct.id &&
+        product.color === SelectedProduct.color
+    );
+
+    if (indexMatch === -1) {
+      // aucun produit est identique
+      productSavedInLocalStorage.push(SelectedProduct);
+    } else {
+      // sinon ajoute la nouvelle quantité à la quantité sauvegardée dans le LS
+      let newQtt =
+        parseInt(productSavedInLocalStorage[indexMatch].quantity) +
+        parseInt(SelectedProduct.quantity);
+
+      
+      productSavedInLocalStorage[indexMatch].quantity = newQtt.toString();
+    }
     localStorage.setItem("product", JSON.stringify(productSavedInLocalStorage));
   } else {
     // quand aucun produit saved dans le panier //
