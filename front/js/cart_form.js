@@ -2,7 +2,7 @@
 
 function getFormInformation() {
   // Déclaration des regex ////
-  let regName = /^[a-zA-z]+$/;
+  let regName = /^[a-zA-z -]+$/;
   let regEmail = /[A-z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-zA-Z]{2,10}/;
 
   // Validation prénom //
@@ -48,30 +48,55 @@ getFormInformation();
 //-------------------------- Envoyer données client au serveur ----------------------////
 
 ///  Ajout de l'évenement ///
-
 document.getElementById("order").addEventListener("click", function (e) {
   e.preventDefault();
 
   /// Récupération des données client du formulaire ///
-
   let infoForm = {
     firstName: document.getElementById("firstName").value,
     lastName: document.getElementById("lastName").value,
-    adress: document.getElementById("address").value,
+    address: document.getElementById("address").value,
     city: document.getElementById("city").value,
     email: document.getElementById("email").value,
   };
-  console.log(infoForm)
+  console.log(infoForm);
 
-  //// Save on localStorage //
+  // -- Sauvegarde données client sur le LocalStorage -- //
+  localStorage.setItem("formClient", JSON.stringify(infoForm));
 
-  // -- données client -- //
-  let contact = JSON.parse(localStorage.getItem("formClient"));
-  contact = [];
-  contact.push(infoForm);
-  localStorage.setItem("formClient", JSON.stringify(contact));
+  // -- Sauvegarde idProduit dans un tableau sur le LocalStorage -- //
+  let idProduct = [];
+  let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
+  for (let product of productSavedInLocalStorage) {
+    idProduct.push(product.id);
+  }
+  console.log(idProduct);
 
-  // -- données produit -- //
-  let dataOrderSavedonLocalStorage = JSON.parse(localStorage.getItem("product"));
+  /// Envoie données de la commande au serveur ///
+  const order = {
+    contact: infoForm,
+    products: idProduct,
+  };
 
+  fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    headers: {
+      Accept: "application/JSON",
+      "Content-type": "application/JSON",
+    },
+    body: JSON.stringify(order),
+  })
+    .then(function (res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function (value) {
+      console.log(value);
+      document.location.href = `confirmation.html?orderId=${value.orderId}`;
+      localStorage.clear();
+    })
+    .catch(function (err) {
+      console.log("une erreur est survenue", err);
+    });
 });
