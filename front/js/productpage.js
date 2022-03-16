@@ -1,32 +1,32 @@
 /////// Récupération id du produit /////////
-let url = new URL(window.location.href);
-let idProduct = url.searchParams.get("id");
+const url = new URL(window.location.href);
+const idProduct = url.searchParams.get("id");
 
 ///////////////////// Récupération des données produits ////////////////////
 async function main() {
-  const article = await getArticle();
+  const product = await getProduct();
 
   ///// Add product image /////
-  let imageArticle = document.createElement("img");
-  imageArticle.src = article.imageUrl;
-  imageArticle.alt = article.altTxt;
-  document.getElementsByClassName("item__img")[0].appendChild(imageArticle);
+  let imageProduct = document.createElement("img");
+  imageProduct.src = product.imageUrl;
+  imageProduct.alt = product.altTxt;
+  document.getElementsByClassName("item__img")[0].appendChild(imageProduct);
 
   ///// Add product name /////
-  let nameArticle = document.getElementById("title");
-  nameArticle.innerHTML = article.name;
+  let nameProduct = document.getElementById("title");
+  nameProduct.innerHTML = product.name;
 
   ///// Add product description /////
-  let descriptionArticle = document.getElementById("description");
-  descriptionArticle.innerHTML = article.description;
+  let descriptionProduct = document.getElementById("description");
+  descriptionProduct.innerHTML = product.description;
 
   ///// Add product price /////
-  let priceArticle = document.getElementById("price");
-  priceArticle.innerHTML = article.price;
+  let priceProduct = document.getElementById("price");
+  priceProduct.innerHTML = product.price;
 
   /////Pick color //////
 
-  for (let colors of article.colors) {
+  for (let colors of product.colors) {
     let colorOption = document.createElement("option");
     document.getElementById("colors").appendChild(colorOption);
     colorOption.value = colors;
@@ -34,7 +34,7 @@ async function main() {
   }
 }
 ////// Récupération des données de l'API /////
-function getArticle() {
+function getProduct() {
   return fetch("http://localhost:3000/api/products/" + idProduct)
     .then(function (res) {
       if (res.ok) {
@@ -49,13 +49,33 @@ function getArticle() {
     });
 }
 
-////////////////////////////////////// Add to Cart ///////////////////////////////////////////
+////////////////////////////////////// Ajout au panier ///////////////////////////////////////////
+function addToCart() {
+  /// ajout de l'événement
+  document.getElementById("addToCart").addEventListener("click", (event) => {
+    event.preventDefault();
 
-/// add event listener //
-document.getElementById("addToCart").addEventListener("click", (event) => {
-  event.preventDefault();
+    const colorSelect = document.getElementById("colors");
+    const quantitySelect = document.getElementById("quantity");
 
-  // récupération des donnée du produit sélectionné //
+    if (!colorSelect.value) {
+      // si pas de couleur sélectionnée
+      colorSelect.style.backgroundColor = "#fbbcbc";
+    }
+    if (quantitySelect.value === "0") {
+      // si la quantité = 0
+      quantitySelect.style.backgroundColor = "#fbbcbc";
+    } else {
+      // ajouter au panier si le formulaire est bien complete
+      addLocalStorage();
+      window.location.href = "index.html";
+    }
+  });
+}
+
+////////////////////////////////////// Fonction pour l'ajout au local storage ///////////////////////////////////////////
+function addLocalStorage() {
+  // récupération des données du produit sélectionné //
   let SelectedProduct = {
     id: idProduct,
     name: document.getElementById("title").innerHTML,
@@ -68,18 +88,17 @@ document.getElementById("addToCart").addEventListener("click", (event) => {
   };
 
   //////////////////// Save to local storage ////////////////////////
-
   let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
+
+  // quand il y a deja des produits dans le panier
   if (productSavedInLocalStorage) {
-    // quand il y a deja des produits dans le panier
+    //  -- si un des produit est identique dans le panier
 
     let indexMatch = productSavedInLocalStorage.findIndex(
-      // si un des produit est identique dans le panier
       (product) =>
         product.id === SelectedProduct.id &&
         product.color === SelectedProduct.color
     );
-
     if (indexMatch === -1) {
       // aucun produit est identique
       productSavedInLocalStorage.push(SelectedProduct);
@@ -89,7 +108,6 @@ document.getElementById("addToCart").addEventListener("click", (event) => {
         parseInt(productSavedInLocalStorage[indexMatch].quantity) +
         parseInt(SelectedProduct.quantity);
 
-      
       productSavedInLocalStorage[indexMatch].quantity = newQtt.toString();
     }
     localStorage.setItem("product", JSON.stringify(productSavedInLocalStorage));
@@ -99,6 +117,7 @@ document.getElementById("addToCart").addEventListener("click", (event) => {
     productSavedInLocalStorage.push(SelectedProduct);
     localStorage.setItem("product", JSON.stringify(productSavedInLocalStorage));
   }
-});
+}
 
 main();
+addToCart();

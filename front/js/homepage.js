@@ -1,9 +1,10 @@
 ///////// Récupération données API ///////////////
 
 async function main() {
-  let products = await getProducts();
 
-  /// template carte produit ///
+  const products = await getProducts();
+
+  /// création de la carte pour chaque produit
   for (let product of products) {
     let template = `
         <a href="./product.html?id=${product._id}">
@@ -18,6 +19,7 @@ async function main() {
   }
 }
 
+// récupération des données de l'api
 function getProducts() {
   return fetch("http://localhost:3000/api/products")
     .then(function (res) {

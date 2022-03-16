@@ -1,6 +1,8 @@
-const url = new URL(window.location.href);
-const idConfirmation = url.searchParams.get("orderId");
+const url = new URL(window.location.href); // récupération de l'url
+const idConfirmation = url.searchParams.get("orderId"); // récupération de l'element ID dans l'url
 
-console.log(idConfirmation);
+function orderConfirmation() {
+  document.getElementById("orderId").innerHTML = `${idConfirmation}`;
+}
 
-document.getElementById("orderId").innerHTML = `${idConfirmation}`;
+orderConfirmation();
