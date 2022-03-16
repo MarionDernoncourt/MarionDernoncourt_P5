@@ -57,15 +57,23 @@ function addToCart() {
 
     const colorSelect = document.getElementById("colors");
     const quantitySelect = document.getElementById("quantity");
+    const validColor = false;
+    const validQuantity = false;
 
-    if (!colorSelect.value) {
+    if (colorSelect.value) {
       // si pas de couleur sélectionnée
+      validColor = true;
+    } else {
       colorSelect.style.backgroundColor = "#fbbcbc";
     }
-    if (quantitySelect.value === "0") {
+    if (quantitySelect.value > 0) {
       // si la quantité = 0
-      quantitySelect.style.backgroundColor = "#fbbcbc";
+      validQuantity = true;
     } else {
+      quantitySelect.style.backgroundColor = "#fbbcbc";
+    }
+
+    if (validColor && validQuantity) {
       // ajouter au panier si le formulaire est bien complete
       addLocalStorage();
       window.location.href = "index.html";
