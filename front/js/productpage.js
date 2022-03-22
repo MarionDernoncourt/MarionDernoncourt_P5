@@ -57,8 +57,8 @@ function addToCart() {
 
     const colorSelect = document.getElementById("colors");
     const quantitySelect = document.getElementById("quantity");
-    const validColor = false;
-    const validQuantity = false;
+    let validColor = false;
+    let validQuantity = false;
 
     if (colorSelect.value) {
       // si pas de couleur sélectionnée

@@ -1,9 +1,6 @@
 ///////// Récupération données API ///////////////
-
 async function main() {
-
   const products = await getProducts();
-
   /// création de la carte pour chaque produit
   for (let product of products) {
     let template = `

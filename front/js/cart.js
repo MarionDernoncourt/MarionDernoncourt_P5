@@ -1,4 +1,4 @@
-// Modification de la quantité
+// Modification de la quantité quand on clique sur le bouton quantité
 function quantityEvent() {
   document.querySelectorAll(".itemQuantity").forEach((element, index) => {
     element.addEventListener("change", function (e) {
@@ -17,8 +17,8 @@ function quantityEvent() {
     });
   });
 }
-// Suppression d'un produit du panier
 
+// Suppression d'un produit du panier quand on clique sur le bouton supprimer
 function deleteEvent() {
   document.querySelectorAll(".deleteItem").forEach((element, index) => {
     element.addEventListener("click", function (e) {
@@ -26,7 +26,7 @@ function deleteEvent() {
         localStorage.getItem("product")
       );
 
-      productSavedInLocalStorage.splice(index, 1);
+      productSavedInLocalStorage.splice(index, 1); // supprime l'element du tableau
 
       localStorage.setItem(
         "product",
@@ -42,11 +42,11 @@ function deleteEvent() {
     });
   });
 }
+
 // création carte produit //
 function generateCardProduct() {
   // Récuperation des données sur le LocalStorage
   let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
-  console.log(productSavedInLocalStorage);
   // création template carte du produit
   for (let product of productSavedInLocalStorage) {
     let template = `
@@ -72,33 +72,31 @@ function generateCardProduct() {
                   </div>
                 </article>
                         `;
-    document.getElementById("cart__items").innerHTML += template;
+    document.getElementById("cart__items").innerHTML += template; // ajout du template au dom
   }
 }
 
 //////////// Fonction quantité total d'article dans le panier /////
 function quantitéDuPanier() {
-  productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
-  let sousQttPanier = [];
-
+  productSavedInLocalStorage = JSON.parse(localStorage.getItem("product")); // récupération du LS
+  let sousQttPanier = []; // quantité de produit différents
   for (let product in productSavedInLocalStorage) {
     sousQttPanier.push(productSavedInLocalStorage[product].quantity);
   }
 
-  let qttPanier = 0;
-
+  let qttPanier = 0; // quantité de produit total
   for (let qtt in sousQttPanier) {
     qttPanier += parseInt(sousQttPanier[qtt]);
-
-    document.getElementById("totalQuantity").innerHTML = qttPanier;
   }
+  document.getElementById("totalQuantity").innerHTML = qttPanier;
+  console.log(qttPanier);
 }
 
 /////////////// Fonction prix total du panier ////////////////
 
 function prixTotalDuPanier() {
   productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
-  let sousTotalPanier = [];
+  let sousTotalPanier = []; // prix pour un produit selon sa quantité
   for (let product in productSavedInLocalStorage) {
     let prixTotalParProduit =
       productSavedInLocalStorage[product].price *
@@ -106,11 +104,11 @@ function prixTotalDuPanier() {
     sousTotalPanier.push(prixTotalParProduit);
   }
 
-  let totalPanier = 0;
+  let totalPanier = 0; // prix total de tous les produits
   for (let sousTotal in sousTotalPanier) {
     totalPanier += sousTotalPanier[sousTotal];
-    document.getElementById("totalPrice").innerHTML = totalPanier;
   }
+  document.getElementById("totalPrice").innerHTML = totalPanier;
 }
 
 generateCardProduct();

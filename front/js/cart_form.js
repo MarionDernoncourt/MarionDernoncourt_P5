@@ -1,7 +1,7 @@
 // fonction pour vérifier individuellement les champs du formulaire //
 function getFormInformation() {
   // Déclaration des regex ////
-  const regName = /^[a-zA-z -]+$/;
+  const regName = /^[a-zA-ZÀ-ÿ -]+$/;
   const regEmail = /[A-z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-zA-Z]{2,10}/;
 
   // Validation prénom //
@@ -44,10 +44,11 @@ function getFormInformation() {
 
 // fonction pour verifier que le panier ne soit pas vide //
 function isCartValid() {
-  if (document.getElementById("totalQuantity").value === 0) {
-    return false;
-  } else {
+  let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
+  if (productSavedInLocalStorage > 0) {
     return true;
+  } else {
+    return false;
   }
 }
 // fonction pour verifier le formulaire global pour confirmer l'envoi de la commande //
@@ -57,7 +58,7 @@ function isFormValid() {
   const address = document.getElementById("address");
   const city = document.getElementById("city");
   const email = document.getElementById("email");
-  const regName = /^[a-zA-z -]+$/;
+  const regName = /^[a-zA-ZÀ-ÿ -]+$/;
   const regEmail = /[A-z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-zA-Z]{2,10}/;
 
   if (
@@ -84,10 +85,7 @@ function confCart() {
     email: document.getElementById("email").value,
   };
 
-  console.log(infoForm);
-
-  // -- Sauvegarde données client sur le LocalStorage -- //
-  localStorage.setItem("formClient", JSON.stringify(infoForm));
+  localStorage.setItem("formClient", JSON.stringify(infoForm)); // sauvegarde données client sur le LocalStorage
 
   // -- Sauvegarde idProduit dans un tableau sur le LocalStorage -- //
   let idProduct = [];
@@ -95,14 +93,13 @@ function confCart() {
   for (let product of productSavedInLocalStorage) {
     idProduct.push(product.id);
   }
-  console.log(idProduct);
 
-  /// Envoie données de la commande au serveur ///
   const order = {
     contact: infoForm,
     products: idProduct,
   };
 
+  /// Envoie données de la commande au serveur ///
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
@@ -117,9 +114,8 @@ function confCart() {
       }
     })
     .then(function (value) {
-      console.log(value);
-      document.location.href = `confirmation.html?orderId=${value.orderId}`;
-      localStorage.clear();
+      document.location.href = `confirmation.html?orderId=${value.orderId}`; // envoie vers la page de confirmation avec numéro de conf
+      localStorage.clear(); // suppression du localstorage
     })
     .catch(function (err) {
       console.log("une erreur est survenue", err);
@@ -130,8 +126,8 @@ function confCart() {
 function order() {
   document.getElementById("order").addEventListener("click", function (e) {
     e.preventDefault();
-
     if (isFormValid() && isCartValid()) {
+      // si formulaire ok et au moins 1 produit dans le panier
       confCart();
     }
   });
