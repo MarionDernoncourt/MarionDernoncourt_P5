@@ -45,10 +45,10 @@ function getFormInformation() {
 // fonction pour verifier que le panier ne soit pas vide //
 function isCartValid() {
   let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
-  if (productSavedInLocalStorage > 0) {
-    return true;
-  } else {
+  if (productSavedInLocalStorage < 1) {
     return false;
+  } else {
+    return true;
   }
 }
 // fonction pour verifier le formulaire global pour confirmer l'envoi de la commande //

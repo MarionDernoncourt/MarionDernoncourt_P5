@@ -31,4 +31,5 @@ function getProducts() {
       console.log("une erreur est survenue: ", err);
     });
 }
+
 main();

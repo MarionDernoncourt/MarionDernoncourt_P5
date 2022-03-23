@@ -55,28 +55,25 @@ function addToCart() {
   document.getElementById("addToCart").addEventListener("click", (event) => {
     event.preventDefault();
 
-    const colorSelect = document.getElementById("colors");
-    const quantitySelect = document.getElementById("quantity");
+    const colorSelect = document.getElementById("colors"); // sélection de l'element Couleur
+    const quantitySelect = document.getElementById("quantity"); // sélection de l'element Quantité
     let validColor = false;
     let validQuantity = false;
 
     if (colorSelect.value) {
-      // si pas de couleur sélectionnée
-      validColor = true;
+      validColor = true; // si une couleur est sélectionnée on change la variable pour true
     } else {
-      colorSelect.style.backgroundColor = "#fbbcbc";
+      colorSelect.style.backgroundColor = "#fbbcbc"; // si pas de couleur sélectionnée variable reste false
     }
     if (quantitySelect.value > 0) {
-      // si la quantité = 0
-      validQuantity = true;
+      validQuantity = true; // si la quantité est > 0 on change la variable pour true
     } else {
-      quantitySelect.style.backgroundColor = "#fbbcbc";
+      quantitySelect.style.backgroundColor = "#fbbcbc"; // si la quantité = 0 variable reste false
     }
 
-    if (validColor && validQuantity) {
-      // ajouter au panier si le formulaire est bien complete
-      addLocalStorage();
-      window.location.href = "index.html";
+    if (validColor && validQuantity) {  // si validColor et validQuantity true
+      addLocalStorage(); 
+      window.location.href = "index.html";     // renvoie vers la page d'accueil
     }
   });
 }
@@ -100,8 +97,8 @@ function addLocalStorage() {
 
   // quand il y a deja des produits dans le panier
   if (productSavedInLocalStorage) {
-    //  -- si un des produit est identique dans le panier
 
+    //  -- si un des produit est identique dans le panier
     let indexMatch = productSavedInLocalStorage.findIndex(
       (product) =>
         product.id === SelectedProduct.id &&

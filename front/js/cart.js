@@ -78,7 +78,7 @@ function generateCardProduct() {
 
 //////////// Fonction quantité total d'article dans le panier /////
 function quantitéDuPanier() {
-  productSavedInLocalStorage = JSON.parse(localStorage.getItem("product")); // récupération du LS
+  let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product")); // récupération du LS
   let sousQttPanier = []; // quantité de produit différents
   for (let product in productSavedInLocalStorage) {
     sousQttPanier.push(productSavedInLocalStorage[product].quantity);
@@ -95,18 +95,18 @@ function quantitéDuPanier() {
 /////////////// Fonction prix total du panier ////////////////
 
 function prixTotalDuPanier() {
-  productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
+  let productSavedInLocalStorage = JSON.parse(localStorage.getItem("product"));
   let sousTotalPanier = []; // prix pour un produit selon sa quantité
   for (let product in productSavedInLocalStorage) {
     let prixTotalParProduit =
       productSavedInLocalStorage[product].price *
       productSavedInLocalStorage[product].quantity;
-    sousTotalPanier.push(prixTotalParProduit);
+    sousTotalPanier.push(prixTotalParProduit); // ajout du prix total pour chaque produit sélectionés
   }
 
   let totalPanier = 0; // prix total de tous les produits
   for (let sousTotal in sousTotalPanier) {
-    totalPanier += sousTotalPanier[sousTotal];
+    totalPanier += sousTotalPanier[sousTotal]; // addition de tous les prix présents dans le tableau sousTotalPanier
   }
   document.getElementById("totalPrice").innerHTML = totalPanier;
 }
