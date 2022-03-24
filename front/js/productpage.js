@@ -5,7 +5,6 @@ const idProduct = url.searchParams.get("id");
 ///////////////////// Récupération des données produits ////////////////////
 async function main() {
   const product = await getProduct();
-
   ///// Add product image /////
   let imageProduct = document.createElement("img");
   imageProduct.src = product.imageUrl;
@@ -50,8 +49,10 @@ function getProduct() {
 }
 
 ////////////////////////////////////// Ajout au panier ///////////////////////////////////////////
-function addToCart() {
+async function addToCart() {
   /// ajout de l'événement
+  const product = await getProduct();
+
   document.getElementById("addToCart").addEventListener("click", (event) => {
     event.preventDefault();
 
@@ -65,31 +66,31 @@ function addToCart() {
     } else {
       colorSelect.style.backgroundColor = "#fbbcbc"; // si pas de couleur sélectionnée variable reste false
     }
-    if (quantitySelect.value > 0) {
+    if (quantitySelect.value > 0 && quantitySelect.value < 100) {
       validQuantity = true; // si la quantité est > 0 on change la variable pour true
     } else {
       quantitySelect.style.backgroundColor = "#fbbcbc"; // si la quantité = 0 variable reste false
     }
 
-    if (validColor && validQuantity) {  // si validColor et validQuantity true
-      addLocalStorage(); 
-      window.location.href = "index.html";     // renvoie vers la page d'accueil
+    if (validColor && validQuantity) {
+      // si validColor et validQuantity true
+      addLocalStorage(product);
+      window.location.href = "index.html"; // renvoie vers la page d'accueil
     }
   });
 }
 
 ////////////////////////////////////// Fonction pour l'ajout au local storage ///////////////////////////////////////////
-function addLocalStorage() {
+function addLocalStorage(product) {
   // récupération des données du produit sélectionné //
   let SelectedProduct = {
-    id: idProduct,
-    name: document.getElementById("title").innerHTML,
+    id: product._id,
+    name: product.name,
+    description: product.description,
+    imageUrl: product.imageUrl,
+    imageTxt: product.altTxt,
     color: document.getElementById("colors").value,
-    description: document.getElementById("description").innerText,
     quantity: document.getElementById("quantity").value,
-    price: document.getElementById("price").innerHTML,
-    imageUrl: document.querySelector(".item__img img").src,
-    imageTxt: document.querySelector(".item__img img").alt,
   };
 
   //////////////////// Save to local storage ////////////////////////
@@ -97,7 +98,6 @@ function addLocalStorage() {
 
   // quand il y a deja des produits dans le panier
   if (productSavedInLocalStorage) {
-
     //  -- si un des produit est identique dans le panier
     let indexMatch = productSavedInLocalStorage.findIndex(
       (product) =>
